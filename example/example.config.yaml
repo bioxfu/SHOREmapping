@@ -1,0 +1,59 @@
+species: Arabidopsis thaliana
+
+seq_info:
+  type: Resequencing
+  mode: PE
+  replicate: 1
+
+path: /home/xfu/Project/Kim/doc/CHK0011/fastq/
+
+samples:
+  - 2-433
+  - 3-400
+  - 57-450
+  - 57-456
+  - 58-463
+  - 59-474
+  - 59-475
+  - 59-484
+  - var2
+
+foreground:
+  - 2-433
+  - 3-400
+  - 57-450
+  - 57-456
+  - 58-463
+  - 59-474
+  - 59-475
+  - 59-484
+
+background:
+  - var2
+  - var2
+  - var2
+  - var2
+  - var2
+  - var2
+  - var2
+  - var2
+
+index: /home/xfu/Gmatic5/genome/tair10/tair10
+#chrSizes: /home/xfu/Gmatic5/genome/tair10/tair10.chromSize
+#gff: /home/xfu/Gmatic5/genome/tair10/tair10.gff
+
+genome: /home/xfu/Git/SHOREmapping/data/TAIR10_chr_all.fas
+chrSizes: /home/xfu/Git/SHOREmapping/data/chrSizes.txt
+gff: /home/xfu/Git/SHOREmapping/data/TAIR10_GFF3_genes_v2.gff
+
+cpu: 30
+
+Rscript_path: /home/xfu/R/3.2.4/bin/Rscript
+
+adapter: /home/xfu/miniconda2/envs/gmatic/share/trimmomatic/adapters/TruSeq3-PE-2.fa
+
+samtools: /home/xfu/Gmatic5/bin/samtools-0.1.19/samtools
+
+bcftools: /home/xfu/Gmatic5/bin/samtools-0.1.19/bcftools/bcftools
+
+shoremap: /home/xfu/Git/SHOREmapping/software/SHOREmap
