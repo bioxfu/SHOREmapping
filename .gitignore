@@ -1,0 +1,14 @@
+.snakemake/
+Snakefile
+annotation/
+backcross/
+bam/
+clean/
+config.yaml
+convert/
+extract/
+fastq/
+fastqc/
+nohup.log
+stat/
+
