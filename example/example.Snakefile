@@ -26,6 +26,7 @@ rule all:
 		expand('annotation/{foreground}_{background}/prioritized_snp_5_1_26975502_peak1.txt', foreground=config['foreground'], background=config['background']),
 		expand('annotation/{foreground}_{background}/prioritized_snp.tsv', foreground=config['foreground'], background=config['background']),
 		expand('annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp.tsv', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_filt.tsv', foreground=config['foreground'], background=config['background']),
 
 rule fastqc_raw_PE:
 	input:
@@ -203,8 +204,9 @@ rule shoremap_annotate_annot:
 	input:
 		'annotation/{foreground}_{background}/prioritized_snp.tsv'
 	output:
-		'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp.tsv'
+		snp = 'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp.tsv',
+		snp_filt = 'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_filt.tsv'
 	params:
 		Rscript = config['Rscript_path']		
 	shell:
-		"{params.Rscript} script/annot_gene.R {input} {output}"
+		"{params.Rscript} script/annot_gene.R {input} {output.snp} {output.snp_filt}"
