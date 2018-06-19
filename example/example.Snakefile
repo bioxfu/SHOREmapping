@@ -18,15 +18,15 @@ rule all:
 		expand('convert/{sample}/1_converted_reference.txt', sample=config['samples']),
 		expand('convert/{sample}/1_converted_variant.txt', sample=config['samples']),
 		expand('extract/{foreground}/extracted_consensus_0.txt', foreground=config['foreground']),
-		expand('backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/prioritized_snp_1_1_30427671_peak1.txt', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/prioritized_snp_2_1_19698289_peak1.txt', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/prioritized_snp_3_1_23459830_peak1.txt', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/prioritized_snp_4_1_18585056_peak1.txt', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/prioritized_snp_5_1_26975502_peak1.txt', foreground=config['foreground'], background=config['background']),
+		expand('backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected_mh1.0000_ic10_ac80_q40_f0.0_EMS', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/prioritized_snp_Chr1_1_30427671_peak1.txt', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/prioritized_snp_Chr2_1_19698289_peak1.txt', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/prioritized_snp_Chr3_1_23459830_peak1.txt', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/prioritized_snp_Chr4_1_18585056_peak1.txt', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/prioritized_snp_Chr5_1_26975502_peak1.txt', foreground=config['foreground'], background=config['background']),
 		expand('annotation/{foreground}_{background}/prioritized_snp.tsv', foreground=config['foreground'], background=config['background']),
 		expand('annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp.tsv', foreground=config['foreground'], background=config['background']),
-		expand('annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_filt.tsv', foreground=config['foreground'], background=config['background']),
+		expand('annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_Nonsyn.tsv', foreground=config['foreground'], background=config['background']),
 
 rule fastqc_raw_PE:
 	input:
@@ -162,51 +162,51 @@ rule shoremap_backcross:
 		bg = 'convert/{background}/1_converted_variant.txt'
 	output:
 		folder = 'backcross/{foreground}_{background}',
-		marker = 'backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected'
+		marker = 'backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected_mh1.0000_ic10_ac80_q40_f0.0_EMS'
 	params:
 		shoremap = config['shoremap'],
 		chrsize = config['chrSizes']
 	shell:
-		"{params.shoremap} backcross --chrsizes {params.chrsize} --marker {input.marker} --consen {input.consen} --folder {output.folder} --marker-score 40 --marker-freq 0.0 --min-coverage 10 --max-coverage 80 --bg {input.bg} --bg-cov 1 --bg-freq 0.0 --bg-score 1 --cluster 1 --marker-hit 1 -plot-bc"
+		"{params.shoremap} backcross --chrsizes {params.chrsize} --marker {input.marker} --consen {input.consen} --folder {output.folder} --marker-score 40 --marker-freq 0.0 --min-coverage 10 --max-coverage 80 --bg {input.bg} --bg-cov 1 --bg-freq 0.0 --bg-score 1 --cluster 5 --marker-hit 1 -plot-bc -plot-win -non-EMS"
 
 rule shoremap_annotate:
 	input:
-		snp = 'backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected'
+		snp = 'backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected_mh1.0000_ic10_ac80_q40_f0.0_EMS'
 	output:
 		folder = 'annotation/{foreground}_{background}',
-		snp_2 = 'backcross/{foreground}_{background}/SHOREmap_marker.bg_corrected.2',
-		anno1 = 'annotation/{foreground}_{background}/prioritized_snp_1_1_30427671_peak1.txt',
-		anno2 = 'annotation/{foreground}_{background}/prioritized_snp_2_1_19698289_peak1.txt',
-		anno3 = 'annotation/{foreground}_{background}/prioritized_snp_3_1_23459830_peak1.txt',
-		anno4 = 'annotation/{foreground}_{background}/prioritized_snp_4_1_18585056_peak1.txt',
-		anno5 = 'annotation/{foreground}_{background}/prioritized_snp_5_1_26975502_peak1.txt'
+		anno1 = 'annotation/{foreground}_{background}/prioritized_snp_Chr1_1_30427671_peak1.txt',
+		anno2 = 'annotation/{foreground}_{background}/prioritized_snp_Chr2_1_19698289_peak1.txt',
+		anno3 = 'annotation/{foreground}_{background}/prioritized_snp_Chr3_1_23459830_peak1.txt',
+		anno4 = 'annotation/{foreground}_{background}/prioritized_snp_Chr4_1_18585056_peak1.txt',
+		anno5 = 'annotation/{foreground}_{background}/prioritized_snp_Chr5_1_26975502_peak1.txt'
 	params:
 		shoremap = config['shoremap'],
 		chrsize = config['chrSizes'],
 		genome = config['genome'],
 		gff = config['gff']
 	shell:
-		"cat {input.snp}|sed 's/Chr//' > {output.snp_2}; {params.shoremap} annotate --chrsizes {params.chrsize} --snp {output.snp_2} --chrom 1 --start 1 --end 30427671 --folder {output.folder} --genome {params.genome} --gff {params.gff}; {params.shoremap} annotate --chrsizes {params.chrsize} --snp {output.snp_2} --chrom 2 --start 1 --end 19698289 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {output.snp_2} --chrom 3 --start 1 --end 23459830 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {output.snp_2} --chrom 4 --start 1 --end 18585056 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {output.snp_2} --chrom 5 --start 1 --end 26975502 --folder {output.folder} --genome {params.genome} --gff {params.gff}"
+		"{params.shoremap} annotate --chrsizes {params.chrsize} --snp {input.snp} --chrom Chr1 --start 1 --end 30427671 --folder {output.folder} --genome {params.genome} --gff {params.gff}; {params.shoremap} annotate --chrsizes {params.chrsize} --snp {input.snp} --chrom Chr2 --start 1 --end 19698289 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {input.snp} --chrom Chr3 --start 1 --end 23459830 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {input.snp} --chrom Chr4 --start 1 --end 18585056 --folder {output.folder} --genome {params.genome} --gff {params.gff};{params.shoremap} annotate --chrsizes {params.chrsize} --snp {input.snp} --chrom Chr5 --start 1 --end 26975502 --folder {output.folder} --genome {params.genome} --gff {params.gff}"
 
 rule shoremap_annotate_combine:
 	input:
-		anno1 = 'annotation/{foreground}_{background}/prioritized_snp_1_1_30427671_peak1.txt',
-		anno2 = 'annotation/{foreground}_{background}/prioritized_snp_2_1_19698289_peak1.txt',
-		anno3 = 'annotation/{foreground}_{background}/prioritized_snp_3_1_23459830_peak1.txt',
-		anno4 = 'annotation/{foreground}_{background}/prioritized_snp_4_1_18585056_peak1.txt',
-		anno5 = 'annotation/{foreground}_{background}/prioritized_snp_5_1_26975502_peak1.txt'
+		anno1 = 'annotation/{foreground}_{background}/prioritized_snp_Chr1_1_30427671_peak1.txt',
+		anno2 = 'annotation/{foreground}_{background}/prioritized_snp_Chr2_1_19698289_peak1.txt',
+		anno3 = 'annotation/{foreground}_{background}/prioritized_snp_Chr3_1_23459830_peak1.txt',
+		anno4 = 'annotation/{foreground}_{background}/prioritized_snp_Chr4_1_18585056_peak1.txt',
+		anno5 = 'annotation/{foreground}_{background}/prioritized_snp_Chr5_1_26975502_peak1.txt'
 	output:
 		'annotation/{foreground}_{background}/prioritized_snp.tsv'
 	shell:
-		"cat {input.anno1} {input.anno2} {input.anno3} {input.anno4} {input.anno5}|cut -f1-7,9,10,12-16|sort -k1,1n -k2,2n|uniq|sed -r 's/$/\t\t\t\t\t\t/'|cut -f1-14 > {output}"
+		"cat {input.anno1} {input.anno2} {input.anno3} {input.anno4} {input.anno5}|cut -f1-7,9,10,12-16|sort -k1,1 -k2,2n|uniq|sed -r 's/$/\t\t\t\t\t\t/'|cut -f1-14 > {output}"
 
 rule shoremap_annotate_annot:
 	input:
 		'annotation/{foreground}_{background}/prioritized_snp.tsv'
 	output:
 		snp = 'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp.tsv',
-		snp_filt = 'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_filt.tsv'
+		snp_filt = 'annotation/{foreground}_{background}/{foreground}_{background}_prioritized_snp_Nonsyn.tsv'
 	params:
 		Rscript = config['Rscript_path']		
 	shell:
 		"{params.Rscript} script/annot_gene.R {input} {output.snp} {output.snp_filt}"
+

@@ -26,7 +26,8 @@ snp$gene <- sub('\\..+', '', snp$transcript)
 snp_anno <- merge(snp, gene_anno, by.x = 15, by.y = 1, all.x = T)
 snp_anno[is.na(snp_anno)] <- ''
 
-snp_anno_filt <- snp_anno[snp_anno$num_reads>=10 & snp_anno$nonSynonymous=="Nonsyn" & snp_anno$region=='CDS' & snp_anno$AF==1, ]
+#snp_anno_filt <- snp_anno[snp_anno$num_reads>=10 & snp_anno$nonSynonymous=="Nonsyn" & snp_anno$region=='CDS' & snp_anno$AF==1, ]
+snp_anno_filt <- snp_anno[snp_anno$nonSynonymous=="Nonsyn", ]
 
 write.table(snp_anno, output, row.names = F, quote = F, sep='\t')
 write.table(snp_anno_filt, output2, row.names = F, quote = F, sep='\t')

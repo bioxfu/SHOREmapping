@@ -5,46 +5,22 @@ seq_info:
   mode: PE
   replicate: 1
 
-path: /home/xfu/Project/Kim/doc/CHK0011/fastq/
+path: /home/xfu/Project/HYH/XGK/YHH0022/SHOREmapping/fastq/
 
 samples:
-  - 2-433
-  - 3-400
-  - 57-450
-  - 57-456
-  - 58-463
-  - 59-474
-  - 59-475
-  - 59-484
-  - var2
+  - M7-9
+  - bri1-5
 
 foreground:
-  - 2-433
-  - 3-400
-  - 57-450
-  - 57-456
-  - 58-463
-  - 59-474
-  - 59-475
-  - 59-484
+  - M7-9
 
 background:
-  - var2
-  - var2
-  - var2
-  - var2
-  - var2
-  - var2
-  - var2
-  - var2
+  - bri1-5
 
 index: /home/xfu/Gmatic5/genome/tair10/tair10
-#chrSizes: /home/xfu/Gmatic5/genome/tair10/tair10.chromSize
-#gff: /home/xfu/Gmatic5/genome/tair10/tair10.gff
-
-genome: /home/xfu/Git/SHOREmapping/data/TAIR10_chr_all.fas
-chrSizes: /home/xfu/Git/SHOREmapping/data/chrSizes.txt
-gff: /home/xfu/Git/SHOREmapping/data/TAIR10_GFF3_genes_v2.gff
+chrSizes: /home/xfu/Gmatic5/genome/tair10/tair10.chromSize
+genome: //home/xfu/Gmatic5/genome/tair10/tair10.fa
+gff: tair10_fix.gff
 
 cpu: 30
 
