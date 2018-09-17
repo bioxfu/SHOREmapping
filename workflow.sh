@@ -57,3 +57,5 @@ SHOREmap annotate --chrsizes reference/chrSizes.txt --folder BC/SHOREmap_analysi
 SHOREmap annotate --chrsizes reference/chrSizes.txt --folder BC/SHOREmap_analysis/ann --snp BC/SHOREmap_analysis/SHOREmap_marker.bg_corrected_mh1.0000_ic10_ac80_q40_f0.0_EMS --chrom 5 --start 1 --end 26975502 --genome indexs/TAIR10_chr_all.fas.shore --gff reference/TAIR10_GFF3_genes.gff
 cat BC/SHOREmap_analysis/ann/prioritized_snp*|sort -nrk6,6 -k1,1n -k2,2n|grep 'Nonsyn'|grep '1\.00'|cut -f1-7,9-10,12-16 > BC/SHOREmap_analysis/ann/prioritized_snp_Nonsyn_AF1.tsv
 Rscript script/annot_gene.R BC/SHOREmap_analysis/ann/prioritized_snp_Nonsyn_AF1.tsv BC/SHOREmap_analysis/ann/prioritized_snp_Nonsyn_AF1_annot.tsv
+cat BC/SHOREmap_analysis/ann/prioritized_snp*.txt|sort -nrk6,6 -k1,1n -k2,2n|cut -f1-7,9-10,12-16|awk '{print $0"\t\t\t\t\t\t"}'|cut -f1-14 > BC/SHOREmap_analysis/ann/prioritized_snp_all.tsv
+Rscript script/annot_gene.R BC/SHOREmap_analysis/ann/prioritized_snp_all.tsv BC/SHOREmap_analysis/ann/prioritized_snp_all_annot.tsv
