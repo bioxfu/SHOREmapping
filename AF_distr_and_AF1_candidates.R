@@ -42,6 +42,6 @@ plot(snp$position[snp$chromosome==5], snp$AF[snp$chromosome==5], xlab = 'Positio
 axis(1, at=seq(0,30000000, 5000000), lab=seq(0,30, 5))
 dev.off()
 
-candidates <- snp[snp$AF == 1, -1]
+candidates <- snp[snp$AF >= 0.9, -1]
 candidates <- candidates[order(candidates$chromosome, candidates$position),]
-write.table(candidates, paste0(output, '_AF1_candidates.tsv'), row.names = F, quote = F, sep='\t')
+write.table(candidates, paste0(output, '_AF0.9_candidates.tsv'), row.names = F, quote = F, sep='\t')
