@@ -89,8 +89,11 @@ Rscript script/annot_gene.R OC/SHOREmap_analysis/annotation/prioritized_snp_Nons
 
 # To make it easier.....
 # remove OC_bg and BC_bg from OC_fg
-python remove_bg_snp.py OC/marker_creation_8_15/parental_combined_quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_q30_n10_r0.9
-python remove_bg_snp.py OC/marker_creation_10_8/parental_combined_quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_q30_n10_r0.9
+python remove_bg_snp.py OC/marker_creation_8_15/parental_combined_quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_rm_parent
+python remove_bg_snp.py OC/marker_creation_10_8/parental_combined_quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_rm_parent
 
-./annotation.sh OC_fg_8_15_q30_n10_r0.9 OC_fg_8_15_q30_n10_r0.9_anno
-./annotation.sh OC_fg_10_8_q30_n10_r0.9 OC_fg_10_8_q30_n10_r0.9_anno
+./annotation.sh OC_fg_8_15_rm_parent OC_fg_8_15_rm_parent_anno
+./annotation.sh OC_fg_10_8_rm_parent OC_fg_10_8_rm_parent_anno
+
+Rscript AF_distr_and_AF1_candidates.R OC_fg_8_15_rm_parent.tsv
+Rscript AF_distr_and_AF1_candidates.R OC_fg_10_8_rm_parent.tsv

@@ -13,5 +13,4 @@ with open(sys.argv[2]) as f:
 		lst = line.strip().split('\t')
 		snp = '|'.join(lst[1:5])
 		if snp not in bg:
-			if int(lst[5]) >= 30 and int(lst[6]) >=10 and float(lst[7]) >= 0.9:
-				print(line.strip())
+			print(line.strip())
