@@ -87,13 +87,49 @@ cat OC/SHOREmap_analysis/annotation/prioritized_snp*|grep 'Nonsyn'|awk '{if($6>=
 Rscript script/annot_gene.R OC/SHOREmap_analysis/annotation/prioritized_snp_Nonsyn_AF.tsv OC/SHOREmap_analysis/annotation/prioritized_snp_Nonsyn_AF_annot.tsv
 
 
-# To make it easier.....
+## remove Col0 SNP
+python remove_bg_snp.py OC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_rm_Col0
+python remove_bg_snp.py OC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_rm_Col0
+
+## find AF blocks
+Rscript ./AF_block.R OC_fg_8_15_rm_Col0
+Rscript ./AF_block.R OC_fg_10_8_rm_Col0
+
+## link blocks and SNPs
+cat OC_fg_8_15_rm_Col0|awk '{print $2"\t"$3-1"\t"$3"\t"$0}' > OC_fg_8_15_rm_Col0.bed
+cat OC_fg_10_8_rm_Col0|awk '{print $2"\t"$3-1"\t"$3"\t"$0}' > OC_fg_10_8_rm_Col0.bed
+
+bedtools intersect -a OC_fg_8_15_rm_Col0_block.bed -b OC_fg_8_15_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_8_15_rm_Col0_in_block
+bedtools intersect -a OC_fg_10_8_rm_Col0_block.bed -b OC_fg_10_8_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_10_8_rm_Col0_in_block
+
+# check links
+cat OC_fg_8_15_rm_Col0_in_block|cut -f1|sort|uniq -c
+cat OC_fg_10_8_rm_Col0_in_block|cut -f1|sort|uniq -c
+
+## remove Ws SNP
+python remove_bg_snp.py BC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC_fg_8_15_rm_Col0_in_block > OC_fg_8_15_rm_Col0_in_block_rm_Ws
+python remove_bg_snp.py BC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC_fg_10_8_rm_Col0_in_block > OC_fg_10_8_rm_Col0_in_block_rm_Ws
+
+./annotation.sh OC_fg_8_15_rm_Col0_in_block_rm_Ws
+./annotation.sh OC_fg_10_8_rm_Col0_in_block_rm_Ws
+
+
+Rscript script/annot_gene_v2.R OC_fg_8_15_rm_Col0_in_block_rm_Ws
+Rscript script/annot_gene_v2.R OC_fg_10_8_rm_Col0_in_block_rm_Ws
+
+
+
 # remove OC_bg and BC_bg from OC_fg
-python remove_bg_snp.py OC/marker_creation_8_15/parental_combined_quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_rm_parent
-python remove_bg_snp.py OC/marker_creation_10_8/parental_combined_quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_rm_parent
-
-./annotation.sh OC_fg_8_15_rm_parent OC_fg_8_15_rm_parent_anno
-./annotation.sh OC_fg_10_8_rm_parent OC_fg_10_8_rm_parent_anno
-
-Rscript AF_distr_and_AF1_candidates.R OC_fg_8_15_rm_parent.tsv
-Rscript AF_distr_and_AF1_candidates.R OC_fg_10_8_rm_parent.tsv
+# python remove_bg_snp.py OC/marker_creation_8_15/parental_combined_quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_rm_parent
+# python remove_bg_snp.py OC/marker_creation_10_8/parental_combined_quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_rm_parent
+# ./annotation.sh OC_fg_8_15_rm_parent OC_fg_8_15_rm_parent_anno
+# ./annotation.sh OC_fg_10_8_rm_parent OC_fg_10_8_rm_parent_anno
+# Rscript AF_distr_and_AF1_candidates.R OC_fg_8_15_rm_parent.tsv
+# Rscript AF_distr_and_AF1_candidates.R OC_fg_10_8_rm_parent.tsv
+# using SHOREmap backcross (v2)
+#echo "# 8. Extract the consensus information for candidate markers"
+#SHOREmap extract --chrsizes reference/chrSizes.txt --folder OC/SHOREmap_analysis_8_15_v2 --marker OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt --consen OC/fg_8_15/consensus/ConsensusAnalysis/supplementary_data/consensus_summary.txt -verbose
+#SHOREmap extract --chrsizes reference/chrSizes.txt --folder OC/SHOREmap_analysis_10_8_v2 --marker OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt --consen OC/fg_10_8/consensus/ConsensusAnalysis/supplementary_data/consensus_summary.txt -verbose
+#echo "# 9. Analysis AFs in the BCF2 population"
+#SHOREmap backcross --chrsizes reference/chrSizes.txt --marker OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt --consen OC/SHOREmap_analysis_8_15_v2/extracted_consensus_0.txt --folder OC/SHOREmap_analysis_8_15_v2 -plot-bc -plot-win --marker-score 30 --marker-freq 0.0 --min-coverage 10 --max-coverage 80 --bg BC/bg/consensus/ConsensusAnalysis/quality_variant.txt --bg-cov 1 --bg-freq 0.0 --bg-score 1 -non-EMS --cluster 5 --marker-hit 1 -verbose
+#SHOREmap backcross --chrsizes reference/chrSizes.txt --marker OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt --consen OC/SHOREmap_analysis_10_8_v2/extracted_consensus_0.txt --folder OC/SHOREmap_analysis_10_8_v2 -plot-bc -plot-win --marker-score 30 --marker-freq 0.0 --min-coverage 10 --max-coverage 80 --bg BC/bg/consensus/ConsensusAnalysis/quality_variant.txt --bg-cov 1 --bg-freq 0.0 --bg-score 1 -non-EMS --cluster 5 --marker-hit 1 -verbose

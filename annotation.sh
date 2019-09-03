@@ -1,5 +1,5 @@
 FILE=$1
-DIR=$2
+DIR=${FILE}_anno
 mkdir $DIR
 SHOREmap annotate --chrsizes reference/chrSizes.txt --folder $DIR --snp $FILE --chrom 1 --start 1 --end 30427671 --genome indexs/TAIR10_chr_all.fas.shore --gff reference/TAIR10_GFF3_genes.gff
 SHOREmap annotate --chrsizes reference/chrSizes.txt --folder $DIR --snp $FILE --chrom 2 --start 1 --end 19698289 --genome indexs/TAIR10_chr_all.fas.shore --gff reference/TAIR10_GFF3_genes.gff
