@@ -87,35 +87,48 @@ cat OC/SHOREmap_analysis/annotation/prioritized_snp*|grep 'Nonsyn'|awk '{if($6>=
 Rscript script/annot_gene.R OC/SHOREmap_analysis/annotation/prioritized_snp_Nonsyn_AF.tsv OC/SHOREmap_analysis/annotation/prioritized_snp_Nonsyn_AF_annot.tsv
 
 
-## remove Col0 SNP
+## remove Col0 (OC_bg) SNP
 python remove_bg_snp.py OC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC/fg_8_15/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_8_15_rm_Col0
 python remove_bg_snp.py OC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC/fg_10_8/consensus/ConsensusAnalysis/quality_variant.txt > OC_fg_10_8_rm_Col0
+python remove_bg_snp.py OC/bg/consensus/ConsensusAnalysis/quality_variant.txt BC/bg/consensus/ConsensusAnalysis/quality_variant.txt > BC_bg_rm_Col0
 
 ## find AF blocks
-Rscript ./AF_block.R OC_fg_8_15_rm_Col0
-Rscript ./AF_block.R OC_fg_10_8_rm_Col0
+#Rscript ./AF_block.R OC_fg_8_15_rm_Col0 20000
+Rscript ./AF_block.R OC_fg_8_15_rm_Col0 1000
+Rscript ./AF_block.R OC_fg_8_15_rm_Col0 5000
+Rscript ./AF_block.R OC_fg_10_8_rm_Col0 20000
 
 ## link blocks and SNPs
 cat OC_fg_8_15_rm_Col0|awk '{print $2"\t"$3-1"\t"$3"\t"$0}' > OC_fg_8_15_rm_Col0.bed
 cat OC_fg_10_8_rm_Col0|awk '{print $2"\t"$3-1"\t"$3"\t"$0}' > OC_fg_10_8_rm_Col0.bed
 
-bedtools intersect -a OC_fg_8_15_rm_Col0_block.bed -b OC_fg_8_15_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_8_15_rm_Col0_in_block
-bedtools intersect -a OC_fg_10_8_rm_Col0_block.bed -b OC_fg_10_8_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_10_8_rm_Col0_in_block
+#bedtools intersect -a OC_fg_8_15_rm_Col0_block20000.bed -b OC_fg_8_15_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_8_15_rm_Col0_in_block20000
+bedtools intersect -a OC_fg_8_15_rm_Col0_block1000.bed -b OC_fg_8_15_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_8_15_rm_Col0_in_block1000
+bedtools intersect -a OC_fg_8_15_rm_Col0_block5000.bed -b OC_fg_8_15_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_8_15_rm_Col0_in_block5000
+bedtools intersect -a OC_fg_10_8_rm_Col0_block20000.bed -b OC_fg_10_8_rm_Col0.bed -wa -wb|cut -f5,10-17 > OC_fg_10_8_rm_Col0_in_block20000
 
 # check links
-cat OC_fg_8_15_rm_Col0_in_block|cut -f1|sort|uniq -c
-cat OC_fg_10_8_rm_Col0_in_block|cut -f1|sort|uniq -c
+#cat OC_fg_8_15_rm_Col0_in_block20000|cut -f1|sort|uniq -c
+cat OC_fg_8_15_rm_Col0_in_block1000|cut -f1|sort|uniq -c
+cat OC_fg_8_15_rm_Col0_in_block5000|cut -f1|sort|uniq -c
+cat OC_fg_10_8_rm_Col0_in_block20000|cut -f1|sort|uniq -c
 
 ## remove Ws SNP
-python remove_bg_snp.py BC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC_fg_8_15_rm_Col0_in_block > OC_fg_8_15_rm_Col0_in_block_rm_Ws
-python remove_bg_snp.py BC/bg/consensus/ConsensusAnalysis/quality_variant.txt OC_fg_10_8_rm_Col0_in_block > OC_fg_10_8_rm_Col0_in_block_rm_Ws
+#python remove_bg_snp.py BC_bg_rm_Col0 OC_fg_8_15_rm_Col0_in_block20000 > OC_fg_8_15_rm_Col0_in_block20000_rm_Ws
+python remove_bg_snp.py BC_bg_rm_Col0 OC_fg_8_15_rm_Col0_in_block1000 > OC_fg_8_15_rm_Col0_in_block1000_rm_Ws
+python remove_bg_snp.py BC_bg_rm_Col0 OC_fg_8_15_rm_Col0_in_block5000 > OC_fg_8_15_rm_Col0_in_block5000_rm_Ws
+python remove_bg_snp.py BC_bg_rm_Col0 OC_fg_10_8_rm_Col0_in_block20000 > OC_fg_10_8_rm_Col0_in_block20000_rm_Ws
 
-./annotation.sh OC_fg_8_15_rm_Col0_in_block_rm_Ws
-./annotation.sh OC_fg_10_8_rm_Col0_in_block_rm_Ws
+#./annotation.sh OC_fg_8_15_rm_Col0_in_block20000_rm_Ws
+./annotation.sh OC_fg_8_15_rm_Col0_in_block1000_rm_Ws
+./annotation.sh OC_fg_8_15_rm_Col0_in_block5000_rm_Ws
+./annotation.sh OC_fg_10_8_rm_Col0_in_block20000_rm_Ws
 
 
-Rscript script/annot_gene_v2.R OC_fg_8_15_rm_Col0_in_block_rm_Ws
-Rscript script/annot_gene_v2.R OC_fg_10_8_rm_Col0_in_block_rm_Ws
+#Rscript script/annot_gene_v2.R OC_fg_8_15_rm_Col0_in_block20000_rm_Ws
+Rscript script/annot_gene_v2.R OC_fg_8_15_rm_Col0_in_block1000_rm_Ws
+Rscript script/annot_gene_v2.R OC_fg_8_15_rm_Col0_in_block5000_rm_Ws
+Rscript script/annot_gene_v2.R OC_fg_10_8_rm_Col0_in_block20000_rm_Ws
 
 
 

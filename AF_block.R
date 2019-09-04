@@ -2,7 +2,8 @@ options(stringsAsFactors = F)
 
 argv <- commandArgs(T)
 input <- argv[1]
-output <- paste0(input, '_block.bed')
+size <- as.numeric(argv[2])
+output <- paste0(input, '_block', size, '.bed')
 
 #input <- 'OC_fg_8_15_rm_Col0'
 snp <- read.table(input, sep = '\t')[c(2, 3, 8)]
@@ -25,7 +26,7 @@ for (i in 1:5) {
   result <- rbind(result, blocks)
 }
 
-result_filt <- result[result$length > 5000 & result$num > 2, c('chr', 'start', 'end', 'num')]
+result_filt <- result[result$length >= size & result$num > 2, c('chr', 'start', 'end', 'num')]
 result_filt$ID <- paste0(result_filt$chr, ':', result_filt$start, '-', result_filt$end, ':', result_filt$num)
 
 write.table(result_filt, output, col.names = F, row.names = F, sep = '\t', quote = F)
