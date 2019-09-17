@@ -27,4 +27,8 @@ snp$gene <- sub('\\..+', '', snp$transcript)
 snp_anno <- merge(snp, gene_anno, by.x = 15, by.y = 1, all.x = T)
 snp_anno[is.na(snp_anno)] <- ''
 
+snp_anno <- snp_anno[snp_anno$nonSynonymous == 'Nonsyn',]
+snp_anno <- snp_anno[snp_anno$AF >= 0.7,]
+snp_anno <- snp_anno[order(-snp_anno$AF), ]
+
 write.table(snp_anno, output, row.names = F, quote = F, sep='\t')
